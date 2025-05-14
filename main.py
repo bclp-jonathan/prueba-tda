@@ -69,4 +69,31 @@ with tab3:
 
 # --- Tab 4: Top Languages
 with tab4:
-    st.subheader("🗣️ Top Spoken Languages (
+    st.subheader("🗣️ Top Spoken Languages (by number of countries)")
+    lang_series = pd.Series([lang for sublist in df["Languages"] for lang in sublist if lang])
+    lang_counts = lang_series.value_counts().head(10)
+    fig_lang = px.bar(lang_counts, x=lang_counts.index, y=lang_counts.values,
+                      labels={"x": "Language", "y": "Number of Countries"},
+                      title="Top 10 Spoken Languages by Country Count", color=lang_counts.values)
+    st.plotly_chart(fig_lang, use_container_width=True)
+
+# --- Tab 5: Country Comparison
+with tab5:
+    st.subheader("⚖️ Compare Two Countries")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        country1 = st.selectbox("First country", df["Name"].sort_values(), key="c1")
+        info1 = df[df["Name"] == country1].iloc[0]
+        st.image(info1["Flag"], width=80)
+        st.markdown(f"**Population**: {info1['Population']:,}")
+        st.markdown(f"**Area**: {info1['Area']:,} km²")
+        st.markdown(f"**Languages**: {', '.join(info1['Languages']) if info1['Languages'] else 'N/A'}")
+    
+    with col2:
+        country2 = st.selectbox("Second country", df["Name"].sort_values(), key="c2")
+        info2 = df[df["Name"] == country2].iloc[0]
+        st.image(info2["Flag"], width=80)
+        st.markdown(f"**Population**: {info2['Population']:,}")
+        st.markdown(f"**Area**: {info2['Area']:,} km²")
+        st.markdown(f"**Languages**: {', '.join(info2['Languages']) if info2['Languages'] else 'N/A'}")
